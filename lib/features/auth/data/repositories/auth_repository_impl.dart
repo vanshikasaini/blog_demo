@@ -1,7 +1,7 @@
 import 'package:blog_demo/core/error/exceptions.dart';
 import 'package:blog_demo/core/error/failures.dart';
 import 'package:blog_demo/features/auth/data/datasources/auth_remote_data_source.dart';
-import 'package:blog_demo/features/auth/domain/entities/user.dart';
+import 'package:blog_demo/core/common/entities/user.dart';
 import 'package:blog_demo/features/auth/domain/repository/auth_repository.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
@@ -98,9 +98,16 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, String>> currentUser() {
-    // TODO: implement currentUser
-    throw UnimplementedError();
+  Future<Either<Failure, User>> currentUser() async {
+    try {
+      final user = await remoteDataSource.getCurrentUserData();
+      if (user == null) {
+        left(Failure('User is not logged in'));
+      }
+      return right(user!);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    }
   }
 
 // Wrapper Function
