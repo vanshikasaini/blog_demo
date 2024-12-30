@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:blog_demo/features/auth/domain/entities/user.dart';
 import 'package:blog_demo/features/auth/domain/usecases/user_sign_up.dart';
 import 'package:meta/meta.dart';
 
@@ -15,13 +16,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       : _userSignUp = userSignUp,
         super(AuthInitial()) {
     on<AuthSignUp>((event, emit) async {
+      emit(AuthLoading());
       //_userSignUp.call() ==> if we do like below declaration it will automatically trigger call()
       final res = await _userSignUp(UserSignUpParams(
           email: event.email, password: event.password, name: event.name));
       // bloc is place where we decide to show error or succes on UI
-      // failure -- Failure , String as response so uId is String
+      // failure -- Failure , String as response so uId is String after full setup we will have USer as Response
       res.fold((failure) => emit(AuthFailure(failure.message)),
-          (uId) => emit(AuthSuccess(uId)));
+          (user) => emit(AuthSuccess(user)));
     });
   }
 }
