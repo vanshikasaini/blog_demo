@@ -7,6 +7,12 @@ import 'package:blog_demo/features/auth/domain/usecases/current_user.dart';
 import 'package:blog_demo/features/auth/domain/usecases/user_login.dart';
 import 'package:blog_demo/features/auth/domain/usecases/user_sign_up.dart';
 import 'package:blog_demo/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:blog_demo/features/blogs/data/data_sources/blog_remote_data_source.dart';
+import 'package:blog_demo/features/blogs/data/repositories/blog_repository_impl.dart';
+import 'package:blog_demo/features/blogs/domain/repositories/blog_repositor.dart';
+import 'package:blog_demo/features/blogs/domain/usecases/get_all_blogs.dart';
+import 'package:blog_demo/features/blogs/domain/usecases/upload_blog.dart';
+import 'package:blog_demo/features/blogs/presentation/bloc/blog_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -14,6 +20,7 @@ final serviceLocator = GetIt.instance;
 
 Future<void> initDependencies() async {
   _initAuth();
+  _initBlog();
   final supabase = await Supabase.initialize(
       url: AppSecrets.supaBaseUrl, anonKey: AppSecrets.anonKeyUrl);
 // Everytime create new instance of class - mostly not used
@@ -95,6 +102,40 @@ void _initAuth() {
         userLogin: serviceLocator(),
         currentUser: serviceLocator(),
         appUserCubit: serviceLocator(),
+      ),
+    );
+}
+
+void _initBlog() {
+  //BlogRemoteDataSource - Datasource
+  serviceLocator
+    ..registerFactory<BlogRemoteDataSource>(
+      () => BlogRemoteDataSourceImpl(
+        serviceLocator(),
+      ),
+    )
+    //BlogRepository -repository
+    ..registerFactory<BlogRepository>(
+      () => BlogRepositoryImpl(
+        blogRemoteDataSource: serviceLocator(),
+      ),
+    ) //UploadBlogs UseCase
+    ..registerFactory<UploadBlogs>(
+      () => UploadBlogs(
+        blogRepository: serviceLocator(),
+      ),
+    )
+    // UseCase -GetAllBlogs
+    ..registerFactory<GetAllBlogs>(
+      () => GetAllBlogs(
+        serviceLocator(),
+      ),
+    )
+    // Bloc BlogBloc --> we have to maintain state so used registerLazySingleton
+    ..registerLazySingleton<BlogBloc>(
+      () => BlogBloc(
+        uploadBlog: serviceLocator(),
+        getAllBlog: serviceLocator(),
       ),
     );
 }

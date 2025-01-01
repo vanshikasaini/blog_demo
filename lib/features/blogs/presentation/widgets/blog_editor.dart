@@ -19,6 +19,12 @@ class BlogEditor extends StatelessWidget {
       ),
       maxLines:
           null, // whenever line enter at the end cursor will automatically come into next line
+      validator: (value) {
+        if (value!.trim().isEmpty) {
+          return '$hinttext is missing';
+        }
+        return null;
+      },
     );
   }
 }

@@ -2,7 +2,8 @@
 import 'dart:io';
 
 import 'package:blog_demo/core/error/exceptions.dart';
-import 'package:fpdart/src/either.dart';
+import 'package:flutter/material.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:blog_demo/core/error/failures.dart';
@@ -42,8 +43,19 @@ class BlogRepositoryImpl implements BlogRepository {
 
       blogModel = blogModel.copyWith(imageUrl: imageUrl);
       final uploadedBlog = await blogRemoteDataSource.uploadBlog(blogModel);
-
+      debugPrint("BlogRepositoryImpl => 1");
       return right(uploadedBlog);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Blog>>> getAllBlogs() async {
+    try {
+      final blogs = await blogRemoteDataSource.getAllBlogs();
+
+      return right(blogs);
     } on ServerException catch (e) {
       return left(Failure(e.message));
     }

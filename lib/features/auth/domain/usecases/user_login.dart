@@ -1,10 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:fpdart/src/either.dart';
 
 import 'package:blog_demo/core/error/failures.dart';
 import 'package:blog_demo/core/usecase/usecase.dart';
 import 'package:blog_demo/core/common/entities/user.dart';
 import 'package:blog_demo/features/auth/domain/repository/auth_repository.dart';
+import 'package:fpdart/fpdart.dart';
 
 class UserLogin implements UseCase<User, UserLoginParams> {
   AuthRepository _authRepository;

@@ -3,6 +3,7 @@ import 'package:blog_demo/core/error/failures.dart';
 import 'package:blog_demo/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:blog_demo/core/common/entities/user.dart';
 import 'package:blog_demo/features/auth/domain/repository/auth_repository.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
@@ -101,9 +102,12 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, User>> currentUser() async {
     try {
       final user = await remoteDataSource.getCurrentUserData();
+      debugPrint("currentUser  => 1");
       if (user == null) {
-        left(Failure('User is not logged in'));
+        debugPrint("currentUser  => user 1 $user");
+        return left(Failure('User is not logged in'));
       }
+      debugPrint("currentUser  => user 2 $user");
       return right(user!);
     } on ServerException catch (e) {
       return left(Failure(e.message));
