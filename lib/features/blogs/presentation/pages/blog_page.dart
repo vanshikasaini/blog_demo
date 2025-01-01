@@ -1,7 +1,6 @@
 import 'package:blog_demo/core/common/widgets/loader.dart';
 import 'package:blog_demo/core/theme/app_pallete.dart';
 import 'package:blog_demo/core/utils/show_snackbar.dart';
-import 'package:blog_demo/features/blogs/domain/usecases/get_all_blogs.dart';
 import 'package:blog_demo/features/blogs/presentation/bloc/blog_bloc.dart';
 import 'package:blog_demo/features/blogs/presentation/pages/add_new_blog_page.dart';
 import 'package:blog_demo/features/blogs/presentation/widgets/blog_card.dart';

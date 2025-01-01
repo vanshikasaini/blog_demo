@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:blog_demo/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:blog_demo/core/common/widgets/loader.dart';
+import 'package:blog_demo/core/constants/constants.dart';
 import 'package:blog_demo/core/theme/app_pallete.dart';
 import 'package:blog_demo/core/utils/pick_image.dart';
 import 'package:blog_demo/core/utils/show_snackbar.dart';
@@ -30,11 +31,17 @@ class _AddNewBlogPageState extends State<AddNewBlogPage> {
   List<String> selectedTopics = [];
   File? image;
   void selectImage() async {
-    final pickedImage = await pickImage();
-    if (pickedImage != null) {
-      setState(() {
-        image = pickedImage;
-      });
+    debugPrint("selectImage => 1");
+    try {
+      final pickedImage = await pickImage();
+      if (pickedImage != null) {
+        debugPrint("selectImage => 2");
+        setState(() {
+          image = pickedImage;
+        });
+      }
+    } catch (e) {
+      debugPrint("selectImage => 3 ${e.toString()}");
     }
   }
 
@@ -120,13 +127,13 @@ class _AddNewBlogPageState extends State<AddNewBlogPage> {
                             child: DottedBorder(
                               color: AppPallete.borderColor,
                               dashPattern: const [10, 4],
-                              radius: Radius.circular(10),
+                              radius: const Radius.circular(10),
                               borderType: BorderType.RRect,
                               strokeCap: StrokeCap.round,
-                              child: Container(
+                              child: const SizedBox(
                                 height: 150,
                                 width: double.infinity,
-                                child: const Column(
+                                child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Icon(
@@ -151,12 +158,7 @@ class _AddNewBlogPageState extends State<AddNewBlogPage> {
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
-                        children: [
-                          'Technology',
-                          'Business',
-                          'Programming',
-                          'Enterainment,'
-                        ]
+                        children: Constants.topics
                             .map(
                               (e) => Padding(
                                 padding: const EdgeInsets.all(5.0),
